@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydoll.browser.interfaces import BrowserOptionsManager, Options
 from pydoll.browser.options import ChromiumOptions
-from pydoll.exceptions import InvalidOptionsObject
+from pydoll.exceptions import ArgumentAlreadyExistsInOptions, InvalidOptionsObject
 
 
 class ChromiumOptionsManager(BrowserOptionsManager):
@@ -42,5 +42,8 @@ class ChromiumOptionsManager(BrowserOptionsManager):
 
     def add_default_arguments(self):
         """Add default arguments required for CDP integration."""
-        self.options.add_argument('--no-first-run')
-        self.options.add_argument('--no-default-browser-check')
+        for default_argument in ('--no-first-run', '--no-default-browser-check'):
+            try:
+                self.options.add_argument(default_argument)
+            except ArgumentAlreadyExistsInOptions:
+                pass
